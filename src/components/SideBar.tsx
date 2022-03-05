@@ -5,26 +5,10 @@ import { api } from '../services/api';
 import { Button } from './Button';
 
 import '../styles/sidebar.scss';
+import { useMovies } from '../hooks/useMovies';
 
-export interface GenreResponseProps {
-  id: number;
-  name: 'action' | 'comedy' | 'documentary' | 'drama' | 'horror' | 'family';
-  title: string;
-}
-
-interface SideBarProps {
-  handleClickButton: (genreId: number) => void;
-  selectedGenreId: number;
-}
-
-export function SideBar({ handleClickButton, selectedGenreId }: SideBarProps) {
-  const [genres, setGenres] = useState<GenreResponseProps[]>([]);
-
-  useEffect(() => {
-    api.get<GenreResponseProps[]>('genres').then((response) => {
-      setGenres(response.data);
-    });
-  }, []);
+export function SideBar() {
+  const { genres, selectedGenreId, toggleSelectedGenre } = useMovies();
 
   return (
     <nav className="sidebar">
@@ -38,7 +22,7 @@ export function SideBar({ handleClickButton, selectedGenreId }: SideBarProps) {
             key={String(genre.id)}
             title={genre.title}
             iconName={genre.name}
-            onClick={() => handleClickButton(genre.id)}
+            onClick={() => toggleSelectedGenre(genre.id)}
             selected={selectedGenreId === genre.id}
           />
         ))}
